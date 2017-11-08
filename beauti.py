@@ -83,5 +83,3 @@ print('title: ', all_title,"\n \n")
 for d in all_description:
 	print('Desc: ', d,"\n \n")
 print('imglinks: ', all_img_links)
-print('imglinks: ', all_img_links)
-
