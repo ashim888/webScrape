@@ -20,9 +20,6 @@ def scrape(url):
 
 def get_link(url):
 	i = 0
-
-	# getPageData = urllib.request.urlopen(url).read()
-	# soup = bs.BeautifulSoup(getPageData, 'lxml')
 	soup = scrape(url)
 
 	# From techcrunch
