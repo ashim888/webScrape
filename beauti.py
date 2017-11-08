@@ -10,65 +10,72 @@ all_img_links = []
 all_description = []
 
 def get_link(url):
+	i = 0
+
 	getPageData = urllib.request.urlopen(url).read()
 	soup = bs.BeautifulSoup(getPageData, 'lxml')
 
 	#from techcrunch
 	my_titles = soup.findAll("h2", { "class" : "post-title" })
-	i = 0
+	find_list_tag = soup.findAll("li", {"class": "river-block"})
+
+	
+	for d in soup.findAll('div', {'class': 'block-video-in-river'}):
+		d.decompose()
+	
 	for title in my_titles:
-		links = title.a["href"]	
-		all_links.append(links)
-		print(links)
+		for link in title.findAll("a", href=True):
+			links = title.a["href"]	
+			all_links.append(links)
 		i = i + 1
-		if i == 5:
+		if i == 10:
 			break		
 
-	# #from thenextweeb
-	# gettitles = soup.findAll("h4", { "class" : "story-title" })
-	# # mytitles = gettitles.findAll("a")
-	# for title in range(gettitles):
-	# 	# print(title.a.string)
-	# 	link = title.a['href']
-	# 	links.append(link)
-
-	# # for link in links[:]:
-	# # 	print("link: ", links)
-	# 	print(links)		
-
-
-get_link(url[0])
-
 def get_data(url):
+	description = ''
 	getPageData = urllib.request.urlopen(url).read()
 	soup = bs.BeautifulSoup(getPageData, 'lxml')
 	
 	#getting article titles
-	# my_title = soup.findAll("h1", {"class", "tweet-title"})
-	# for title in my_title:
-		# strTitle = title.string
+	my_title = soup.findAll("h1", {"class", "tweet-title"})
+	for title in my_title:
+		strTitle = title.string
+		all_title.append(strTitle)
+		# Testing
 		# mainTitle = re.sub("\xa0"," ",strTitle)
 		# all_title.append(mainTitle)
-		# print(title.string)
-		# all_title.append(title.string)
+	
+
 
 	#getting article image links
-	myImgLinks = soup.find("div", {"class", "article-entry"})
+	myImgLinks = soup.find("div", {"class", "article-entry"}).findAll('img')
 	for imgLink in myImgLinks:
-		print(imgLink.img["src"])
-		# img_links = imgLink.img["src"]
-		# all_img_links.append(img_links)
+		print(imgLink["src"])
+		img_links = imgLink.img["src"]
+		all_img_links.append(img_links)
 
 
 	# getting article description
+	
 	# my_desc = soup.find("div", {"class", "article-entry"}).findAll('p')
 	# for desc in my_desc:
-	# 	print(desc.text)
+	# 	new_desc = desc.text
+	# 	description = description+'\n'+new_desc
+		
+		# Testing
+		# print(new_desc,"\n")
+		# all_description.append(desc.text);
 
-	print("done processing222")
+	all_description.append(description)	
+
+# Calling functions
+get_link(url[0])
 for i in range(len(all_links)):
 	get_data(all_links[i])
 
-# print('title: ', all_title)
+
 # print('links: ', all_links)
-# print('imglinks: ', all_img_links)
+print('title: ', all_title)
+# for d in all_description:
+# 	print('Desc: ', d)
+print('imglinks: ', all_img_links)
