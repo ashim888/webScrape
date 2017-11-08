@@ -1,6 +1,5 @@
-import bs4 as bs
-import urllib.request
-import re
+from bs4 import BeautifulSoup
+import requests,lxml, urllib2
 
 url = ['https://techcrunch.com/', 'https://thenextweb.com/latest/', 'http://www.foxnews.com/']
 
@@ -8,45 +7,31 @@ all_title = []
 all_links =[]
 all_img_links = []
 all_description = []
+agents = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36',
+    }
+
+def scrape(url):
+	getPageData = requests.get(url,headers=agents)
+	return BeautifulSoup(getPageData.text, 'lxml')
+
 
 def get_link(url):
-	getPageData = urllib.request.urlopen(url).read()
-	soup = bs.BeautifulSoup(getPageData, 'lxml')
-
+	soup = scrape(url)
 	#from techcrunch
 	my_titles = soup.findAll("h2", { "class" : "post-title" })
 	for title in my_titles:
 		links = title.a["href"]
 		all_links.append(links)
-		print(links)
-
-	# #from thenextweeb
-	# gettitles = soup.findAll("h4", { "class" : "story-title" })
-	# # mytitles = gettitles.findAll("a")
-	# for title in range(gettitles):
-	# 	# print(title.a.string)
-	# 	link = title.a['href']
-	# 	links.append(link)
-
-	# # for link in links[:]:
-	# # 	print("link: ", links)
-	# 	print(links)		
-
+		# print(links)
 
 get_link(url[0])
 
 def get_data(url):
-	getPageData = urllib.request.urlopen(url).read()
-	soup = bs.BeautifulSoup(getPageData, 'lxml')
-	
+	soup = scrape(url)	
 	#getting article titles
-	my_title = soup.findAll("h1", {"class", "tweet-title"})
-	for title in my_title:
-		# strTitle = title.string
-		# mainTitle = re.sub("\xa0"," ",strTitle)
-		# all_title.append(mainTitle)
-		# print(title.string)
-		all_title.append(title.string)
+	title = soup.find("div",class_="l-main").find('h1').get_text() #search title
+	print title
 
 	#getting article image links
 	# myImgLinks = soup.find("div", {"class", "article-entry"})
@@ -57,14 +42,18 @@ def get_data(url):
 
 
 	#getting article description
-	my_desc = soup.find("div", {"class", "article-entry"}).findAll('p')
-	for desc in my_desc:
-		print(desc.string)
+	for x in soup.find_all("div",class_="article-entry"):
+		body= [y.get_text() for y in x.find_all("p")]
+	print body
 
 	print("done processing222")
-for i in range(len(all_links)):
-	get_data(all_links[i])
 
-print('title: ', all_title)
-print('links: ', all_links)
-print('imglinks: ', all_img_links)
+print all_links[0]
+get_data(all_links[0])
+
+# for i in range(len(all_links)):
+# 	get_data(all_links[i])
+
+# print('title: ', all_title)
+# print('links: ', all_links)
+# print('imglinks: ', all_img_links)
