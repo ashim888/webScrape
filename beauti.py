@@ -15,10 +15,14 @@ def get_link(url):
 
 	#from techcrunch
 	my_titles = soup.findAll("h2", { "class" : "post-title" })
+	i = 0
 	for title in my_titles:
-		links = title.a["href"]
+		links = title.a["href"]	
 		all_links.append(links)
 		print(links)
+		i = i + 1
+		if i == 5:
+			break		
 
 	# #from thenextweeb
 	# gettitles = soup.findAll("h4", { "class" : "story-title" })
@@ -40,31 +44,31 @@ def get_data(url):
 	soup = bs.BeautifulSoup(getPageData, 'lxml')
 	
 	#getting article titles
-	my_title = soup.findAll("h1", {"class", "tweet-title"})
-	for title in my_title:
+	# my_title = soup.findAll("h1", {"class", "tweet-title"})
+	# for title in my_title:
 		# strTitle = title.string
 		# mainTitle = re.sub("\xa0"," ",strTitle)
 		# all_title.append(mainTitle)
 		# print(title.string)
-		all_title.append(title.string)
+		# all_title.append(title.string)
 
 	#getting article image links
-	# myImgLinks = soup.find("div", {"class", "article-entry"})
-	# for imgLink in myImgLinks:
-	# 	# print(imgLink.img["src"])
-	# 	img_links = imgLink.img["src"]
-	# 	all_img_links.append(img_links)
+	myImgLinks = soup.find("div", {"class", "article-entry"})
+	for imgLink in myImgLinks:
+		print(imgLink.img["src"])
+		# img_links = imgLink.img["src"]
+		# all_img_links.append(img_links)
 
 
-	#getting article description
-	my_desc = soup.find("div", {"class", "article-entry"}).findAll('p')
-	for desc in my_desc:
-		print(desc.string)
+	# getting article description
+	# my_desc = soup.find("div", {"class", "article-entry"}).findAll('p')
+	# for desc in my_desc:
+	# 	print(desc.text)
 
 	print("done processing222")
 for i in range(len(all_links)):
 	get_data(all_links[i])
 
-print('title: ', all_title)
-print('links: ', all_links)
-print('imglinks: ', all_img_links)
+# print('title: ', all_title)
+# print('links: ', all_links)
+# print('imglinks: ', all_img_links)
